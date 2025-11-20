@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luminzo | Home</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* GLOBAL */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0f1a, #1a1f2e, #10131b);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 0 18px rgba(0, 255, 255, 0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .navbar h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #00eaff, #6a5af9);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .nav-icons {
+      font-size: 22px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-icons div {
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .nav-icons div:hover {
+      transform: scale(1.25);
+      filter: drop-shadow(0 0 8px #00eaff);
+    }
+
+    /* MAIN BOX */
+    .home-container {
+      margin-top: 95px;
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 32px 28px 50px;
+      border-radius: 28px;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.12);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* HEADER */
+    header h2 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      font-size: 14px;
+      color: #d3d3d3;
+    }
+
+    /* FLOATING AI ICON */
+    .illustration {
+      width: 110px;
+      margin: 18px auto;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 14px rgba(0, 212, 255, 0.4));
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0); }
+    }
+
+    .brief p {
+      font-size: 15px;
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-top: 8px;
+    }
+
+    bold { font-weight: 700; color: #00eaff; }
+
+    /* QUIZ CARDS */
+    .quiz-types {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .quiz-card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 18px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+      transition: 0.3s;
+    }
+
+    .quiz-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .quiz-card h3 {
+      font-size: 20px;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    .quiz-card p {
+      margin-top: 5px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .ai {
+      border-left: 4px solid #00eaff;
+    }
+
+    .manual {
+      border-left: 4px solid #ffd34d;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 28px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <h1>Luminzo</h1>
+    <div class="nav-icons">
+      <div onclick="window.location='home.html'">🏠</div>
+      <div onclick="window.location='leaderboard.html'">🏆</div>
+      <div onclick="window.location='settings.html'">⚙️</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="home-container">
+    <header>
+      <h2>Welcome, <span id="userName"></span> 👋</h2>
+      <p class="subtitle">Challenge your brain with AI-powered quizzes!</p>
+    </header>
+
+    <section class="brief">
+      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712034.png" class="illustration">
+      <p>
+        Luminzo brings learning and fun together.  
+        Choose from <bold>AI-generated quizzes</bold> or  
+        the special <bold>GPT Mode</bold>.  
+        Improve your knowledge — <bold>100% FREE</bold> forever!
+      </p>
+    </section>
+
+    <section class="quiz-types">
+      <div class="quiz-card ai" onclick="window.location='apiquiz.html'">
+        🧠
+        <h3>AI Quiz Mode</h3>
+        <p>Smart questions generated using Together AI</p>
+      </div>
+
+      <div class="quiz-card manual" onclick="window.location='gpt-quiz.html'">
+        📚
+        <h3>GPT SPECIAL Mode</h3>
+        <p>Smarter personalised quizzes powered by GPT</p>
+      </div>
+    </section>
+
+    <footer>Developed by Fidaur | © Luminzo 2025</footer>
+  </div>
+
+  <script>
+    const username = localStorage.getItem('username');
+    if (!username) {
+      window.location.href = "user.html";
+    } else {
+      document.getElementById('userName').textContent = username;
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Quiz | Powered by TogetherAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0f1a, #1a1f2e, #10131b);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* -------------- Banner -------------- */
+    .launch-banner {
+      width: 100%;
+      text-align: center;
+      padding: 18px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: linear-gradient(90deg, #6a5af9, #00d4ff);
+      color: #fff;
+      letter-spacing: 1px;
+      box-shadow: 0 0 18px rgba(0, 212, 255, 0.4);
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      0% {
+        text-shadow: 0 0 8px #fff;
+      }
+      100% {
+        text-shadow: 0 0 18px #00d4ff, 0 0 30px #6a5af9;
+      }
+    }
+
+    /* -------------- Quiz Container -------------- */
+    .quiz-container {
+      width: 90%;
+      max-width: 650px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      padding: 30px;
+      border-radius: 24px;
+      margin-top: 40px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+      transition: 0.4s ease;
+    }
+
+    .quiz-container:hover {
+      box-shadow: 0 0 35px rgba(0, 212, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    h1 {
+      font-weight: 700;
+      text-align: center;
+      font-size: 1.8rem;
+      background: linear-gradient(90deg, #6a5af9, #00eaff);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 20px;
+    }
+
+    #welcome {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: #c4c4c4;
+    }
+
+    /* -------------- Select Inputs -------------- */
+    select ,input{
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: #00d4ff;
+      outline: none;
+      box-shadow: 0 0 8px #00d4ff;
+    }
+
+    /* -------------- Buttons -------------- */
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(90deg, #00eaff, #6a5af9);
+      color: #000;
+      transition: 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+    }
+
+    #options button {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      margin: 10px 0;
+    }
+
+    #options button:hover {
+      background: #00eaff;
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* -------------- Quiz Elements -------------- */
+    #timer {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #ffde59;
+      margin-top: 10px;
+    }
+
+    #feedback {
+      margin-top: 15px;
+      text-align: center;
+      white-space: pre-line;
+    }
+
+    #question {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* -------------- Result Screen -------------- */
+    #result-screen {
+      text-align: center;
+      animation: fadein 0.6s ease;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #9da5b1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="launch-banner">🚀 AI-Powered Quiz — Powered by Together AI</div>
+  <h2 id="welcome"></h2>
+
+  <div class="quiz-container">
+    <h1>AI Quiz Generator</h1>
+
+    <!-- SELECTION SCREEN -->
+    <div id="selection-screen">
+      <label for="subject">Choose Subject:</label>
+      <select id="subject">
+        <option value="Mathematics">Mathematics</option>
+        <option value="Science">Science</option>
+        <option value="Social Science">Social Science</option>
+        <option value="English">English</option>
+        <option value="Hindi">Hindi</option>
+      </select>
+
+      <label for="chapter">Enter Chapter:</label>
+      <input id="chapter">
+            <label for="topic">Enter Topic:</label>
+      <input id="topic"> 
+<label for="age">Quantity:</label>
+<input type="range" id="quantity" name="quantity" min="10" max="50" value="30" oninput="this.nextElementSibling.value = this.value">
+<output for="age">30</output>
+
+      <button id="startQuiz">Start Quiz</button>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quiz-screen" style="display:none;">
+      <h2 id="question"></h2>
+      <div id="options"></div>
+      <p id="timer">⏳ Time Left: <span id="time">30</span> sec</p>
+      <p id="feedback"></p>
+      <button id="nextQuestion" style="display:none;">Next Question</button>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" style="display:none;">
+      <h2>🎉 Quiz Completed!</h2>
+      <p id="final-score"></p>
+      <button onclick="location.reload()">Play Again</button>
+    </div>
+
+  </div>
+
+  <footer>© 2025 Developer Fidaur | AI Quiz Platform</footer>
+  <script>
+    const username = localStorage.getItem('username');
+    if (!username) {
+      window.location.href = "user.html"; // Redirect if user not found
+    } else {
+      document.getElementById('welcome').textContent = `Hello, ${username}! 👋`;
+    }
+    let quizData = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+
+    document.getElementById("startQuiz").addEventListener("click", async function() {
+      const subject = document.getElementById("subject").value;
+      const chapter = document.getElementById("chapter").value;
+      const topic = document.getElementById("topic").value;
+      const quantity = document.getElementById("quantity").value;
+
+      // Hide selection and show quiz screen
+      document.getElementById("selection-screen").style.display = "none";
+      document.getElementById("quiz-screen").style.display = "block";
+
+      // Fetch questions from Together AI API
+     quizData = await fetchMCQs(subject, chapter, topic, quantity);
+      if (quizData.length > 0) {
+        startQuiz();
+      } else {
+        alert("Failed to load questions. Try again.");
+        // location.reload();
+      }
+    });
+    let apiResponse = null;
+    async function fetchMCQs(subject, chapter, topic, quantity) {
+      const API_KEY = "689742d9a6ab10bc669d9386c4f3007d2e3b81ca543e80e83f12b6e7855ffcc4"; // Replace with your actual API key
+
+      try {
+        const response = await fetch("https://api.together.xyz/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${API_KEY}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "mistralai/Mistral-7B-Instruct-v0.2",
+            messages: [{
+              role: "user",
+              content: `You are a cbse exam expert,having 5+ years of experience in setting cbse exam papers.  
+Generate ${quantity} multiple-choice questions for Class 10 CBSE ${subject}, 
+Chapter: ${chapter}, Topic: ${topic}.  
+Do NOT write anything other than JSON.
+IMPORTANT: Make sure the "correct_answer" value is exactly equal to one of the 4 options you provide. 
+If you cannot do that, return "correct_answer_index" (0-based).  
+Return ONLY a JSON array—no extra text, no markdown, no code blocks.
+
+Provide options, the correct answer, and a short explanation in JSON format like:
+[{"question": "What is 2+2?", "options": ["3","4","5","6"], "correct_answer": "4", "explanation": "2+2=4"}]
+
+Use ONLY latest NCERT syllabus and do NOT repeat questions.
+`
+                }]
+          })
+        });
+
+        const data = await response.json();
+
+
+        console.log("API Response:", data);
+       // console.log("API Response:",messages[0].content);
+
+        if (!data.choices || !data.choices[0]?.message?.content) {
+          console.error("Invalid API response format:", data);
+          return [];
+        }
+
+        // Extract and parse JSON content
+        let jsonString = data.choices[0].message.content.replace(/```json|```/g, "").trim();
+        return JSON.parse(jsonString);
+        console.log(jsonString);
+      } catch (error) {
+        console.error("Error fetching MCQs:", error);
+        return [];
+      }
+    }
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      clearInterval(timer);
+
+      if (currentQuestionIndex >= quizData.length) {
+        endQuiz();
+        return;
+      }
+
+      const currentQuestion = quizData[currentQuestionIndex];
+      document.getElementById("question").innerText = currentQuestion.question;
+
+      const optionsContainer = document.getElementById("options");
+      optionsContainer.innerHTML = "";
+
+      currentQuestion.options.forEach((option) => {
+        const button = document.createElement("button");
+        button.innerText = option;
+        button.onclick = () => checkAnswer(option, currentQuestion.correct_answer, currentQuestion.explanation);
+        optionsContainer.appendChild(button);
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      let timeLeft = 30;
+      document.getElementById("time").innerText = timeLeft;
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("time").innerText = timeLeft;
+        if (timeLeft === 0) {
+          clearInterval(timer);
+          function nextQuestion() {
+  currentQuestionIndex++;
+  document.getElementById("feedback").innerText = "";
+  document.getElementById("nextQuestion").style.display = "none";
+
+  showQuestion();
+}
+        }
+      }, 1000);
+    }
+
+    function checkAnswer(selected, correct, explanation) {
+      clearInterval(timer);
+      document.getElementById("feedback").innerText = selected === correct ?
+        "Correct! 🎉" :
+        `Wrong ❌. Correct Answer: ${correct}\nExplanation: ${explanation}`;
+
+      if (selected === correct) score++;
+
+      document.getElementById("nextQuestion").style.display = "block";
+    }
+
+    document.getElementById("nextQuestion").addEventListener("click", function() {
+      currentQuestionIndex++;
+      document.getElementById("feedback").innerText = "";
+      document.getElementById("nextQuestion").style.display = "none";
+
+      showQuestion();
+    });
+
+    function endQuiz() {
+      document.getElementById("quiz-screen").style.display = "none";
+      document.getElementById("result-screen").style.display = "block";
+      document.getElementById("final-score").innerText = `You scored ${score}/${quizData.length}`;
+    }
+    // your JavaScript code remains same as before
+  </script>
+
+</body>
+
+</html>

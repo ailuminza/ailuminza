@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Luminzo — AI-Powered Quizzes (Free)</title>
+  <meta name="description" content="Luminzo— AI-powered quizzes, GPT special mode, leaderboard & progress. 100% free forever." />
+  <style>
+    :root{
+      --bg-1:#06070a;
+      --bg-2:#071329;
+      --accent:#00d2ff;
+      --accent-2:#7b2cff;
+      --glass: rgba(255,255,255,0.04);
+      --muted:#9aa7b2;
+      --card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      --glass-strong: rgba(255,255,255,0.06);
+      --radius:18px;
+      --max-width:980px;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    /* ===== base ===== */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(135deg,var(--bg-1),var(--bg-2));color:#eaf7ff;-webkit-font-smoothing:antialiased}
+    a{color:var(--accent)}
+    main{max-width:420px;margin:0 auto;padding:20px 18px 80px;display:block}
+
+    /* ===== floating orbs background ===== */
+    .bg-orbs{
+      position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+      background: radial-gradient(1200px circle at 10% 10%, rgba(123,44,255,0.06) 0%, transparent 10%),
+                  radial-gradient(900px circle at 90% 90%, rgba(0,210,255,0.03) 0%, transparent 12%);
+      mix-blend-mode: screen;
+    }
+    .orb{
+      position:absolute; border-radius:50%; filter:blur(28px); opacity:.6; transform:translate3d(0,0,0);
+      animation: float 12s linear infinite;
+    }
+    .orb.o1{width:420px;height:420px;left:-80px;top:-80px;background:linear-gradient(135deg,#7b2cff,#00d2ff); animation-duration:16s;opacity:.28}
+    .orb.o2{width:300px;height:300px;right:-60px;bottom:-60px;background:linear-gradient(135deg,#00d2ff,#7b2cff); animation-duration:18s;opacity:.22}
+    @keyframes float {0%{transform:translateY(0) scale(1)}50%{transform:translateY(-22px) scale(1.03)}100%{transform:translateY(0) scale(1)}}
+
+    /* ===== top navbar (compact for mobile) ===== */
+    .nav{
+      position:fixed; top:10px; left:50%; transform:translateX(-50%);
+      width:calc(100% - 36px); max-width:420px; z-index:30;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 14px; border-radius:14px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03); box-shadow:0 10px 30px rgba(0,0,0,0.45);
+      backdrop-filter: blur(8px);
+    }
+    .logo {display:flex; gap:10px; align-items:center}
+    .logo .mark{
+      width:44px;height:44px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent-2),var(--accent));
+      display:grid;place-items:center;font-weight:800;color:#041426;font-size:18px;box-shadow:0 8px 24px rgba(123,44,255,0.08)
+    }
+    .logo .title{font-weight:700;color:#eaf7ff;font-size:16px}
+    .nav .cta{background:transparent;border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;color:var(--muted);cursor:pointer}
+    .nav .cta:hover{transform:translateY(-3px)}
+
+    /* ===== hero ===== */
+    .hero{
+      margin-top:86px;
+      background:var(--card-bg);
+      border-radius:var(--radius); padding:22px; position:relative; z-index:10;
+      border:1px solid rgba(255,255,255,0.03); box-shadow:0 18px 40px rgba(1,4,12,0.6);
+      overflow:hidden;
+    }
+    .hero h1{font-size:22px;margin:0 0 6px; color:#fff; letter-spacing:.2px; text-shadow:0 6px 30px rgba(123,44,255,0.08)}
+    .hero .tag{color:var(--muted);font-size:13px;margin-bottom:12px}
+    .hero p{color:#daf5ff;opacity:.95;line-height:1.45;margin:0 0 16px}
+    .badge{
+      display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03); font-weight:700; color:var(--accent);
+    }
+    .hero .cta-row{display:flex; gap:10px; margin-top:10px; align-items:center}
+    .btn-primary{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#031824; border:none; padding:12px 14px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:0 10px 30px rgba(123,44,255,0.08)
+    }
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:10px 12px;border-radius:12px;cursor:pointer}
+
+    /* subtle hero text entrance */
+    .hero h1, .hero p, .badge, .hero .cta-row {opacity:0; transform:translateY(10px); animation:enter .7s ease forwards; }
+    .hero h1 {animation-delay:.12s} .hero .tag{animation-delay:.05s} .hero p{animation-delay:.18s} .badge{animation-delay:.02s} .hero .cta-row{animation-delay:.26s}
+    @keyframes enter{to{opacity:1; transform:none}}
+
+    /* ===== features grid ===== */
+    .features{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01)); padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,0.03); box-shadow:0 8px 25px rgba(0,0,0,0.5); display:flex; gap:10px; align-items:center}
+    .card .icon{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent-2),var(--accent)); display:grid;place-items:center; font-weight:800;color:#041426}
+    .card h3{font-size:14px;margin:0;color:#eaf7ff}
+    .card p{font-size:12px;margin:0;color:var(--muted)}
+
+    /* full-width highlight */
+    .highlight{margin-top:16px;padding:12px;border-radius:12px;background:linear-gradient(90deg, rgba(0,210,255,0.03), rgba(123,44,255,0.025));border:1px solid rgba(255,255,255,0.025);display:flex;gap:12px;align-items:center}
+    .highlight .pill{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#031824;padding:8px 10px;border-radius:999px;font-weight:800}
+
+    /* ===== signup form ===== */
+    .signup{margin-top:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
+    .signup h3{margin:0 0 8px;color:#eaf7ff}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input, select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#eaf7ff;outline:none;font-size:14px}
+    input::placeholder{color:rgba(234,247,255,0.45)}
+    .form-row{margin-top:10px}
+    .form-actions{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .muted{font-size:12px;color:var(--muted)}
+
+    /* ===== footer ===== */
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:12px}
+
+    /* ===== result of small screens & tweaks ===== */
+    @media (min-width:720px){
+      main{max-width:720px;padding:28px}
+      .features{grid-template-columns:repeat(4,1fr)}
+      .hero h1{font-size:28px}
+    }
+    @media (max-width:420px){
+      .nav{left:8px;right:8px;transform:none;width:calc(100% - 16px);max-width:none}
+      .features{grid-template-columns:repeat(2,1fr)}
+      .hero{padding:18px}
+    }
+
+    /* subtle focus states */
+    input:focus, select:focus, button:focus{box-shadow:0 8px 30px rgba(123,44,255,0.06); border-color:rgba(123,44,255,0.12)}
+  </style>
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb o1" aria-hidden="true"></div>
+    <div class="orb o2" aria-hidden="true"></div>
+  </div>
+
+  <!-- top nav -->
+  <nav class="nav" role="navigation" aria-label="Main">
+    <div class="logo" aria-hidden="false">
+      <div class="mark" aria-hidden="true">L</div>
+      <div>
+        <div class="title">Luminzo</div>
+        <div style="font-size:11px;color:var(--muted)">AI Quizzes · Free</div>
+      </div>
+    </div>
+    <div>
+    </div>
+  </nav>
+
+  <main role="main">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div>
+          <div class="badge" aria-hidden="true">🚀 100% FREE</div>
+          <h1 id="hero-title">AI-Powered Quizzes for Students — Free Forever</h1>
+          <div class="tag">Personalized questions • GPT special mode • Track progress</div>
+          <p>Practice smarter — not harder. Get tailored MCQs for your class & chapter. Use GPT-mode to generate custom quizzes or hit AI mode for instant questions.</p>
+          <div class="cta-row">
+            <button class="btn-primary" id="startBtn">Start Your Journey →</button>
+            <button class="btn-ghost" onclick="openAbout()">Learn more</button>
+          </div>
+        </div>
+        <div style="min-width:86px; text-align:center;">
+          <!-- small illustration -->
+          <svg width="86" height="86" viewBox="0 0 48 48" aria-hidden="true">
+            <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7b2cff"/><stop offset="1" stop-color="#00d2ff"/></linearGradient></defs>
+            <rect x="4" y="4" width="40" height="40" rx="10" fill="url(#g)"></rect>
+            <g fill="#031824" font-weight="700" font-size="20" font-family="Poppins" transform="translate(12,11)">Q</g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features" aria-label="Features">
+      <div class="card" role="article" aria-labelledby="f1">
+        <div class="icon">AI</div>
+        <div>
+          <h3 id="f1">AI Quiz Mode</h3>
+          <p>Instant questions from TogetherAI — exam focused.</p>
+        </div>
+      </div>
+
+      <div class="card" role="article" aria-labelledby="f2">
+        <div class="icon">GPT</div>
+        <div>
+          <h3 id="f2">GPT Special</h3>
+          <p>Copy the prompt to ChatGPT, paste JSON and run quiz.</p>
+        </div>
+      </div>
+
+      <div class="card" role="article" aria-labelledby="f3">
+        <div class="icon">🏆</div>
+        <div>
+          <h3 id="f3">Leaderboard</h3>
+          <p>Track average % score & climb ranks.</p>
+        </div>
+      </div>
+
+      <div class="card" role="article" aria-labelledby="f4">
+        <div class="icon">🔒</div>
+        <div>
+          <h3 id="f4">Privacy-first</h3>
+          <p>No spam, no trackers. Local-first profiles.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="highlight" role="note" aria-live="polite">
+      <div class="pill">100% FREE</div>
+      <div style="flex:1">
+        <strong>Forever free</strong> — no ads, no subscriptions. Built for students.
+      </div>
+    <!--  <div class="muted">Works offline after first load</div> -->
+    </div>
+
+    <!-- SIGNUP (target of CTA) -->
+    <section id="signup" class="signup" aria-labelledby="signup-title">
+      <h3 id="signup-title">Get started — create your profile</h3>
+      <p class="muted">Your profile is stored locally on this device. You can export results later.</p>
+
+      <div class="form-row">
+        <label for="name">Full name</label>
+        <input id="name" type="text" placeholder="e.g. Sana Akhtar" autocomplete="name" />
+      </div>
+
+      <div class="form-row">
+        <label for="school">School</label>
+        <input id="school" type="text" placeholder="Your school name" />
+      </div>
+
+      <div class="grid-2 form-row">
+        <div>
+          <label for="class">Class</label>
+          <select id="class">
+            <option value="">Select Class</option>
+            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+            <option>11</option><option>12</option>
+          </select>
+        </div>
+        <div>
+          <label for="age">Age</label>
+          <input id="age" type="number" min="5" max="30" placeholder="Age" />
+        </div>
+      </div>
+
+      <div class="grid-2 form-row">
+        <div>
+          <label for="state">State</label>
+          <input id="state" type="text" placeholder="e.g. Bihar" />
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Pick a secure password" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" id="signupBtn">Create Profile & Start →</button>
+        <!--<button class="btn-ghost" onclick="skipSignup()">Maybe later</button>-->
+        <div style="flex:1"></div>
+      <!--  <div class="muted">Already have a profile? <a href="home.html" style="color:var(--accent)">Open Home</a></div> -->
+      </div>
+    </section>
+
+    <footer>
+      <div>Made with ❤️ by Fidaur • Luminzo © 2025</div>
+    </footer>
+  </main>
+
+  <script>
+    // redirect if profile exists
+    (function(){
+      const existing = localStorage.getItem('username');
+      if (existing) {
+        // user already set up — go to home (you can comment this out while testing)
+         location.href = 'home.html';
+      }
+    })();
+
+    // smooth scroll CTA
+    document.getElementById('startBtn').addEventListener('click', (e)=>{
+      e.preventDefault();
+      document.getElementById('signup').scrollIntoView({behavior:'smooth', block:'center'});
+      const first = document.getElementById('name');
+      setTimeout(()=> first.focus(), 500);
+    });
+
+    function openAbout(){ alert('Luminzo — AI powered quizzes. Free forever.'); }
+
+    function goToHome(){ location.href = 'home.html'; }
+
+    function skipSignup(){
+      if(confirm('Skip signup? You can create profile later. Continue to Home?')) {
+        location.href = 'home.html';
+      }
+    }
+
+    // helper: convert ArrayBuffer to hex
+    function bufToHex(buffer){
+      const hexCodes = [];
+      const view = new DataView(buffer);
+      for (let i = 0; i < view.byteLength; i += 4) {
+        // read 4 bytes, convert to hex
+        const value = view.getUint32(i);
+        const stringValue = value.toString(16);
+        const padding = '00000000';
+        const padded = (padding + stringValue).slice(-padding.length);
+        hexCodes.push(padded);
+      }
+      return hexCodes.join('');
+    }
+
+    // async password hashing (SHA-256)
+    async function sha256hex(text){
+      const enc = new TextEncoder();
+      const data = enc.encode(text);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return bufToHex(hash);
+    }
+
+    document.getElementById('signupBtn').addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const school = document.getElementById('school').value.trim();
+      const cls = document.getElementById('class').value;
+      const age = document.getElementById('age').value.trim();
+      const state = document.getElementById('state').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!name || !school || !cls || !age || !state || !password) {
+        alert('Please fill all fields to continue.');
+        return;
+      }
+
+      try {
+        const hash = await sha256hex(password);
+        // store profile
+        const profile = { username: name, school, class: cls, age: Number(age), state, passHash: hash, createdAt: new Date().toISOString(), gamesPlayed: 0, totalPercentScore: 0 };
+        localStorage.setItem('userProfile', JSON.stringify(profile));
+        localStorage.setItem('username', name);
+        localStorage.setItem('school', school);
+        localStorage.setItem('class', cls);
+        // success animate & redirect
+        document.querySelector('.signup').style.transform = 'translateY(6px) scale(.995)';
+        setTimeout(()=> location.href = 'home.html', 700);
+      } catch (err) {
+        console.error(err);
+        alert('Failed to create profile — try again.');
+      }
+    });
+  </script>
+</body>
+</html>
